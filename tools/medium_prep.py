@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import html
+import math
 import os
 import re
 import shutil
@@ -302,45 +303,62 @@ def cell_to_html(text: str) -> str:
     return text
 
 
-TABLE_CSS = f"""
+TABLE_FONT = 14.5  # px, matched to the body copy of the article
+TABLE_FONT_FLOOR = 11.5  # below this a table image stops being readable
+
+
+def table_css(font: float) -> str:
+    return f"""
 * {{ box-sizing: border-box; }}
 body {{ margin: 0; background: #fff; }}
 /* One fixed width for every table image: uniform in the article, and once the
    margin is added it lands on exactly CONTENT_WIDTH, so the browser displays
    it 1:1 and Medium never has to upscale a narrow one. */
 #cap {{ display: inline-block; width: {CONTENT_WIDTH - TABLE_MARGIN * 2}px; }}
+/* Only data cells are held to one line. A header wrapping onto a second line is
+   ordinary table typography; a wrapped data row is what looks broken. */
+#cap.nowrap td {{ white-space: nowrap; }}
 table {{
   border-collapse: collapse; width: 100%; table-layout: auto;
-  font: 400 14.5px/1.5 {SANS}; color: #1a1a1a;
+  font: 400 {font}px/1.5 {SANS}; color: #1a1a1a;
 }}
 thead th {{
-  text-align: left; font-weight: 700; font-size: 11.5px; letter-spacing: .04em;
-  text-transform: uppercase; color: #6b6b6b; padding: 0 11px 7px;
-  border-bottom: 2px solid #2f2f2f;
+  text-align: left; font-weight: 700; font-size: {font * 0.79:.2f}px;
+  letter-spacing: .04em; text-transform: uppercase; color: #6b6b6b;
+  padding: 0 11px 7px; border-bottom: 2px solid #2f2f2f;
 }}
 /* Upper-casing a header that mixes CJK with Latin looks like a shouting typo. */
-thead th.cjk {{ text-transform: none; letter-spacing: 0; font-size: 12.5px; }}
+thead th.cjk {{
+  text-transform: none; letter-spacing: 0; font-size: {font * 0.86:.2f}px;
+}}
 tbody td {{ padding: 7px 11px; border-bottom: 1px solid #e8e8e8; vertical-align: top; }}
 tbody tr:last-child td {{ border-bottom: 2px solid #2f2f2f; }}
 td.right, th.right {{ text-align: right; }}
 td.center, th.center {{ text-align: center; }}
-code {{ font: 400 13px {MONO}; background: #f2f2f2; padding: 1px 4px; border-radius: 3px; }}
+code {{
+  font: 400 {font * 0.9:.2f}px {MONO}; background: #f2f2f2;
+  padding: 1px 4px; border-radius: 3px;
+}}
 b {{ font-weight: 700; color: #000; }}
 .ok {{ color: #1a7f45; font-weight: 700; }}
 .no {{ color: #bf2f24; font-weight: 700; }}
 """
 
+# scrollWidth reveals whether holding data cells to one line pushed the table
+# wider than its container, which a fixed-width container's own rect cannot show.
 MEASURE_JS = """
-const r = document.getElementById('cap').getBoundingClientRect();
-document.documentElement.setAttribute(
-  'data-wh', Math.ceil(r.width) + 'x' + Math.ceil(r.height));
+const cap = document.getElementById('cap');
+const r = cap.getBoundingClientRect();
+document.documentElement.setAttribute('data-wh', [
+  Math.ceil(r.width), Math.ceil(r.height),
+  Math.ceil(cap.querySelector('table').scrollWidth)].join('x'));
 """
 
 
 CJK = re.compile(r"[\u3000-\u303f\u3400-\u4dbf\u4e00-\u9fff\uff00-\uffef]")
 
 
-def table_to_html_page(table: Table) -> str:
+def table_to_html_page(table: Table, variant: str = "", font: float = TABLE_FONT) -> str:
     thead = ""
     if table.has_headers:
         cells = "".join(
@@ -359,8 +377,9 @@ def table_to_html_page(table: Table) -> str:
         body_rows.append(f"<tr>{cells}</tr>")
     return (
         f"<!doctype html><html><head><meta charset='utf-8'>"
-        f"<style>{TABLE_CSS}</style></head><body>"
-        f"<div id='cap'><table>{thead}<tbody>{''.join(body_rows)}</tbody></table></div>"
+        f"<style>{table_css(font)}</style></head><body>"
+        f"<div id='cap' class='{variant}'>"
+        f"<table>{thead}<tbody>{''.join(body_rows)}</tbody></table></div>"
         f"<script>{MEASURE_JS}</script></body></html>"
     )
 
@@ -405,19 +424,8 @@ def fontconfig_env() -> dict[str, str]:
     return env
 
 
-def render_table_png(table: Table, out_path: Path, chrome: str, env: dict) -> Path:
-    """Two Chromium passes: one to measure the table, one to screenshot it.
-
-    Chromium screenshots the whole window rather than the content, so measuring
-    first avoids clipped rows and trailing whitespace. PIL then trims to the
-    real ink and re-pads, which makes the result independent of CSS padding.
-    """
-    page = table_to_html_page(table)
-    with tempfile.NamedTemporaryFile("w", suffix=".html", delete=False, encoding="utf-8") as f:
-        f.write(page)
-        page_path = f.name
-
-    base_flags = [
+def chrome_flags(chrome: str) -> list[str]:
+    return [
         chrome,
         "--headless=new",
         "--disable-gpu",
@@ -425,22 +433,72 @@ def render_table_png(table: Table, out_path: Path, chrome: str, env: dict) -> Pa
         "--hide-scrollbars",
         "--default-background-color=FFFFFFFF",
     ]
+
+
+def measure_page(page: str, chrome: str, env: dict) -> tuple[int, int, int]:
+    """Chromium screenshots the whole window rather than the content, so ask the
+    page how big it is first; that avoids clipped rows and trailing whitespace.
+
+    Returns the container width and height plus the table's own width.
+    """
+    with tempfile.NamedTemporaryFile("w", suffix=".html", delete=False, encoding="utf-8") as f:
+        f.write(page)
+        path = f.name
     try:
         dom = subprocess.run(
-            base_flags + ["--dump-dom", f"file://{page_path}"],
+            chrome_flags(chrome) + ["--dump-dom", f"file://{path}"],
             capture_output=True,
             text=True,
             env=env,
             timeout=120,
         ).stdout
-        match = re.search(r'data-wh="(\d+)x(\d+)"', dom)
-        if not match:
-            raise SystemExit(f"Could not measure table {table.index}")
-        width, height = int(match.group(1)), int(match.group(2))
+    finally:
+        os.unlink(path)
+    match = re.search(r'data-wh="(\d+)x(\d+)x(\d+)"', dom)
+    if not match:
+        raise SystemExit("Could not measure table")
+    return int(match.group(1)), int(match.group(2)), int(match.group(3))
 
+
+def fit_font(table: Table, chrome: str, env: dict) -> tuple[float, bool]:
+    """Pick the largest font that keeps every data row on a single line.
+
+    English cells run longer than their Chinese equivalents, and a table that
+    wraps into ragged two-line rows reads worse than the same table half a point
+    smaller. Table width is close to linear in font size, so each measurement
+    gives a good estimate of the size that would fit.
+    """
+    inner_width = CONTENT_WIDTH - TABLE_MARGIN * 2
+    font = TABLE_FONT
+    for _ in range(3):
+        *_, table_width = measure_page(table_to_html_page(table, "nowrap", font), chrome, env)
+        if table_width <= inner_width:
+            return font, True
+        # 0.99 absorbs the cell padding, which does not shrink with the font.
+        estimate = font * inner_width / table_width * 0.99
+        if estimate < TABLE_FONT_FLOOR:
+            return TABLE_FONT_FLOOR, False
+        # Tidy half-pixel steps, and always at least one step down.
+        font = min(math.floor(estimate * 2) / 2, font - 0.5)
+    return font, False
+
+
+def render_table_png(
+    table: Table, out_path: Path, chrome: str, env: dict
+) -> tuple[float, bool]:
+    """Screenshot one table at exactly the article's column width."""
+    font, nowrap = fit_font(table, chrome, env)
+    page = table_to_html_page(table, "nowrap" if nowrap else "", font)
+    container, height, table_width = measure_page(page, chrome, env)
+    width = max(container, table_width)
+
+    with tempfile.NamedTemporaryFile("w", suffix=".html", delete=False, encoding="utf-8") as f:
+        f.write(page)
+        page_path = f.name
+    try:
         out_path.parent.mkdir(parents=True, exist_ok=True)
         subprocess.run(
-            base_flags
+            chrome_flags(chrome)
             + [
                 f"--force-device-scale-factor={SCALE}",
                 f"--window-size={width + 8},{height + 8}",
@@ -455,8 +513,10 @@ def render_table_png(table: Table, out_path: Path, chrome: str, env: dict) -> Pa
     finally:
         os.unlink(page_path)
 
+    # Trimming to the real ink and re-padding makes the result independent of
+    # how the CSS happened to lay out the surrounding whitespace.
     trim_and_pad(out_path, pad=TABLE_MARGIN * SCALE)
-    return out_path
+    return font, nowrap
 
 
 def trim_and_pad(path: Path, pad: int) -> None:
@@ -521,7 +581,11 @@ def rewrite(lang: str, skip_images: bool) -> tuple[str, list[str]]:
             alt = plan.alt.get(lang, "")
             if not skip_images:
                 print(f"  rendering {filename}", file=sys.stderr)
-                render_table_png(table, TABLE_IMG_DIR / filename, chrome, env)
+                font, nowrap = render_table_png(table, TABLE_IMG_DIR / filename, chrome, env)
+                if not nowrap:
+                    print(f"    wraps even at {font}px", file=sys.stderr)
+                elif font != TABLE_FONT:
+                    print(f"    narrowed to {font}px to avoid wrapping", file=sys.stderr)
             out.append(f"![{alt}]({IMG_URL_BASE}/tables/{filename})")
             links = collect_links(table)
             if links:
