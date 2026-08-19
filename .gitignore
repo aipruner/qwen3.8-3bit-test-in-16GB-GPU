@@ -6,6 +6,8 @@ tetris_runs/played_*.html
 game_runs/
 .DS_Store
 
-# write-ups and research reports live locally only — this repo is code + raw results
-output/
+# write-ups and research reports live locally only — this repo is code + raw results.
+# Exception: images are tracked so Medium's importer can fetch them over HTTPS.
+output/*
+!output/images/
 docs/
