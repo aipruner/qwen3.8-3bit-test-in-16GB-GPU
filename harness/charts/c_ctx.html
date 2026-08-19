@@ -1,0 +1,9 @@
+<link rel=stylesheet href=base.css>
+<h2>Token generation stays flat from 1K to 29K context</h2>
+<div class=sub>Cache-busted scan (random salt prefix per request) · 32K window · symmetric q8_0 KV cache</div>
+<div class=row><div class=lab>1,059 prompt tokens</div><div class=track><div class="bar c" style="width:80%">79.98 t/s</div></div></div>
+<div class=row><div class=lab>7,869</div><div class=track><div class="bar c" style="width:84.7%">84.74 t/s</div></div></div>
+<div class=row><div class=lab>15,697</div><div class=track><div class="bar c" style="width:84.1%">84.12 t/s</div></div></div>
+<div class=row><div class=lab>23,528</div><div class=track><div class="bar c" style="width:69.7%">69.68 t/s</div></div></div>
+<div class=row><div class=lab>29,379</div><div class=track><div class="bar c" style="width:83%">83.00 t/s</div></div></div>
+<div class=note>Only 16 of the 64 layers hold a KV cache in this hybrid architecture (~32 KB/token at q8_0), so 29K of context is under 1 GiB of KV. The community worry that hybrid attention collapses as the cache fills did not show up inside a 32K window.</div>

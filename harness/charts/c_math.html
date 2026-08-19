@@ -1,0 +1,13 @@
+<link rel=stylesheet href=base.css>
+<h2>Math: 8 hard problems — pure reasoning vs. a Python tool</h2>
+<div class=sub>Qwen3.8-27B UD-Q3_K_XL · RTX 5070 Ti 16GB · same 8 problems, same sampling params</div>
+<div class=grp><h3>Correct answers (out of 8)</h3>
+<div class=row><div class=lab>Pure reasoning</div><div class=track><div class="bar a" style="width:50%">4 / 8</div></div></div>
+<div class=row><div class=lab>+ run_python tool</div><div class=track><div class="bar b" style="width:100%">8 / 8</div></div></div></div>
+<div class=grp><h3>Total wall-clock (seconds, lower is better)</h3>
+<div class=row><div class=lab>Pure reasoning</div><div class=track><div class="bar a" style="width:100%">406 s</div></div></div>
+<div class=row><div class=lab>+ run_python tool</div><div class=track><div class="bar b" style="width:30.3%">123 s</div></div></div></div>
+<div class=grp><h3>Total tokens (lower is better)</h3>
+<div class=row><div class=lab>Pure reasoning</div><div class=track><div class="bar a" style="width:100%">43,015</div></div></div>
+<div class=row><div class=lab>+ run_python tool</div><div class=track><div class="bar b" style="width:59.9%">25,754</div></div></div></div>
+<div class=note>All 4 failures hit the 8,000-token cap — the model never printed a wrong number, it ran out of room. A control run of Q5 at a 24,000-token cap still failed after 20,165 tokens / 184 s.</div>

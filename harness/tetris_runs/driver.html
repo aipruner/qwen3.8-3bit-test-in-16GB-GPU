@@ -1,0 +1,17 @@
+<script>
+(function(){
+  function k(key){document.dispatchEvent(new KeyboardEvent('keydown',{key:key,bubbles:true}));}
+  var s=1337; function rnd(){s=(s*1103515245+12345)&0x7fffffff;return s/0x7fffffff;}
+  var seq=[];
+  for(var i=0;i<16;i++){
+    var r=Math.floor(rnd()*4);
+    for(var j=0;j<r;j++) seq.push('ArrowUp');
+    var d=Math.floor(rnd()*9)-4;
+    for(var j=0;j<Math.abs(d);j++) seq.push(d<0?'ArrowLeft':'ArrowRight');
+    seq.push(' ');
+  }
+  var i2=0;
+  function step(){ if(i2<seq.length){ k(seq[i2++]); setTimeout(step,8);} }
+  setTimeout(step,60);
+})();
+</script>

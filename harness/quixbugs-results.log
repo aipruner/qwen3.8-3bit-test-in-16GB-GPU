@@ -1,0 +1,31 @@
+bitcount                     PASS steps=6   calls=6   out_tok=1892    31.7s tg=105.8 
+bucketsort                   PASS steps=5   calls=5   out_tok=598      8.4s tg=108.0 
+find_first_in_sorted         PASS steps=6   calls=6   out_tok=2614    32.4s tg= 93.2 
+find_in_sorted               PASS steps=5   calls=5   out_tok=1320    15.9s tg=101.3 
+flatten                      PASS steps=6   calls=6   out_tok=857     11.9s tg=105.7 
+gcd                          PASS steps=5   calls=6   out_tok=814     11.1s tg=100.9 
+get_factors                  PASS steps=5   calls=6   out_tok=1185    16.7s tg= 90.5 
+hanoi                        PASS steps=5   calls=6   out_tok=1494    19.7s tg= 91.5 
+is_valid_parenthesization    PASS steps=5   calls=5   out_tok=567      8.5s tg= 99.0 
+kheapsort                    PASS steps=5   calls=6   out_tok=940     13.5s tg= 97.1 
+kth                          PASS steps=5   calls=6   out_tok=726     10.1s tg=107.5 
+lcs_length                   PASS steps=5   calls=5   out_tok=672      9.2s tg=104.0 
+lis                          FAIL steps=3   calls=4   out_tok=3163    32.7s tg=105.2 
+longest_common_subsequence   PASS steps=5   calls=6   out_tok=842     13.1s tg= 89.8 
+max_sublist_sum              PASS steps=6   calls=6   out_tok=744     11.2s tg= 93.5 
+mergesort                    PASS steps=5   calls=6   out_tok=752     11.7s tg= 97.0 
+next_palindrome              PASS steps=5   calls=6   out_tok=3105    33.7s tg=107.9 
+next_permutation             PASS steps=5   calls=5   out_tok=1080    14.2s tg= 96.9 
+pascal                       PASS steps=5   calls=6   out_tok=945     12.3s tg=102.5 
+possible_change              PASS steps=5   calls=5   out_tok=487      8.9s tg= 89.6 
+powerset                     PASS steps=6   calls=6   out_tok=1508    17.3s tg=108.8 
+quicksort                    PASS steps=5   calls=6   out_tok=565      9.4s tg= 94.9 
+rpn_eval                     PASS steps=5   calls=5   out_tok=1522    18.8s tg= 98.9 
+shunting_yard                PASS steps=5   calls=6   out_tok=771     10.1s tg=111.9 
+sieve                        PASS steps=5   calls=5   out_tok=455      8.0s tg= 97.0 
+sqrt                         PASS steps=5   calls=5   out_tok=5270    68.7s tg= 97.7 
+subsequences                 FAIL steps=14  calls=17  out_tok=7641   106.6s tg= 81.1 
+to_base                      PASS steps=5   calls=6   out_tok=717     10.6s tg= 98.7 
+wrap                         PASS steps=6   calls=7   out_tok=837     12.8s tg= 99.3 
+
+SUMMARY 27/29 passed  total_wall=589s  total_tok=297636 (in 253553 / out 44083)  calls=175 bad=0 cheat=0

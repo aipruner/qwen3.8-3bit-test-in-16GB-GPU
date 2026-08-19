@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.gguf
+quix_runs/
+tetris_runs/played_*.html
+game_runs/
+.DS_Store
+
+# write-ups and research reports live locally only — this repo is code + raw results
+output/
+docs/

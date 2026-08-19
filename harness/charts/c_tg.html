@@ -1,0 +1,8 @@
+<link rel=stylesheet href=base.css>
+<h2>Generation speed depends on what you generate</h2>
+<div class=sub>Same server, same settings, MTP speculative decoding (--spec-draft-n-max 4), tokens/sec</div>
+<div class=row><div class=lab>Agent loop (tool calls)</div><div class=track><div class="bar b" style="width:98%">111–115 t/s</div></div></div>
+<div class=row><div class=lab>Code (Python / HTML+JS)</div><div class=track><div class="bar c" style="width:93%">100–113 t/s</div></div></div>
+<div class=row><div class=lab>English prose</div><div class=track><div class="bar d" style="width:72%">80–85 t/s</div></div></div>
+<div class=row><div class=lab>Chinese prose</div><div class=track><div class="bar a" style="width:70%">~80 t/s</div></div></div>
+<div class=note>MTP only pays off when the draft head guesses right. Structured, repetitive output (tool-call JSON, code) is predictable; free-form prose is not. Benchmarking a local model with chat prompts systematically understates its agent-loop speed.</div>

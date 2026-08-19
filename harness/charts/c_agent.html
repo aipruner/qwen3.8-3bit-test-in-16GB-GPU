@@ -1,0 +1,12 @@
+<link rel=stylesheet href=base.css>
+<h2>Agentic bug fixing on QuixBugs — verdicts decided by re-running the suite, not by the model</h2>
+<div class=sub>Qwen3.8-27B UD-Q3_K_XL · self-built ReAct harness (list_dir / read_file / write_file / run_tests)</div>
+<div class=grp><h3>Fix rate — 29 programs</h3>
+<div class=row><div class=lab>Fixed</div><div class=track><div class="bar b" style="width:93.1%">27 / 29 &nbsp;·&nbsp; 93.1%</div></div></div>
+<div class=row><div class=lab>Solved in 5 steps or fewer</div><div class=track><div class="bar c" style="width:72.4%">21 / 29 &nbsp;·&nbsp; 72.4%</div></div></div>
+<div class=row><div class=lab>Failed</div><div class=track><div class="bar a" style="width:6.9%">2 / 29</div></div></div></div>
+<div class=grp><h3>Tool-call integrity across all 29 runs</h3>
+<div class=row><div class=lab>Well-formed JSON</div><div class=track><div class="bar b" style="width:100%">175 / 175 &nbsp;·&nbsp; 100%</div></div></div>
+<div class=row><div class=lab>Cheated by editing tests</div><div class=track><div class="bar b" style="width:100%">0 / 175 calls &nbsp;·&nbsp; 0 / 29 runs</div></div></div>
+</div>
+<div class=note>0 of 29 runs edited the test file — the easiest shortcut available, checked by MD5 before and after. Median: 12.3 s, 5 steps. Total wall-clock 589 s. The two failures were <b>lis</b> (gave up after 3 steps without editing anything) and <b>subsequences</b> (burned all 14 steps and was still instrumenting the file when it ran out).</div>

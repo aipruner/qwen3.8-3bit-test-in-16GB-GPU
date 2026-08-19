@@ -1,0 +1,12 @@
+<link rel=stylesheet href=base.css>
+<h2>3-bit vs 4-bit on one 16GB card: it is not a speed trade-off, it is a cliff</h2>
+<div class=sub>Same GPU, same llama.cpp build, same flags. Verdict is measured generation speed, not whether the server started.</div>
+<div class=grp><h3>Qwen3.8-27B UD-Q3_K_XL — 12.51 GiB of weights</h3>
+<div class=row><div class=lab>32,768 context, q8_0</div><div class=track><div class="bar a" style="width:8.7%">10.4</div></div></div>
+<div class=row><div class=lab>24,576 context, q8_0</div><div class=track><div class="bar b" style="width:100%">119.6 tokens/sec</div></div></div>
+<div class=row><div class=lab>16,384 context, q8_0</div><div class=track><div class="bar b" style="width:98.7%">118.1</div></div></div></div>
+<div class=grp><h3>Qwen3.8-27B IQ4_XS — 14.63 GiB, the smallest 4-bit build there is</h3>
+<div class=row><div class=lab>8,192 context, q8_0</div><div class=track><div class="bar a" style="width:1.5%"></div><span style="position:absolute;left:56px;top:3px;font-size:13px;color:#c0392b;font-weight:600">0.4</span></div></div>
+<div class=row><div class=lab>4,096 context, q4_0</div><div class=track><div class="bar a" style="width:1.5%"></div><span style="position:absolute;left:56px;top:3px;font-size:13px;color:#c0392b;font-weight:600">no reply within 200 s</span></div></div>
+<div class=row><div class=lab>2,048 context, q4_0</div><div class=track><div class="bar a" style="width:1.5%"></div><span style="position:absolute;left:56px;top:3px;font-size:13px;color:#c0392b;font-weight:600">no reply within 200 s</span></div></div></div>
+<div class=note>Every 4-bit build larger than IQ4_XS (Q4_0 14.95, Q4_K_S 15.01, Q4_K_M 15.93, UD-Q4_K_XL 16.69 GiB) is bigger still. On this card the choice is not "3-bit or 4-bit" — it is "3-bit or nothing."</div>
