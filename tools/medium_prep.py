@@ -57,6 +57,14 @@ SANS = (
 )
 MONO = "'Cascadia Mono',Consolas,'DejaVu Sans Mono','Liberation Mono',monospace"
 
+# Medium's article column is about 700px wide. Rendering table images any wider
+# means the browser downscales them, shrinking their text below the body copy
+# and inverting the reading hierarchy. So render at the display width and let
+# wide tables wrap instead.
+CONTENT_WIDTH = 700
+TABLE_MARGIN = 24  # white space each side, in CSS px
+SCALE = 2  # device pixel ratio, for crisp text on retina displays
+
 
 @dataclass
 class TablePlan:
@@ -297,20 +305,26 @@ def cell_to_html(text: str) -> str:
 TABLE_CSS = f"""
 * {{ box-sizing: border-box; }}
 body {{ margin: 0; background: #fff; }}
-#cap {{ display: inline-block; max-width: 1180px; }}
-table {{ border-collapse: collapse; font: 400 15.5px/1.55 {SANS}; color: #1a1a1a; }}
+/* One fixed width for every table image: uniform in the article, and once the
+   margin is added it lands on exactly CONTENT_WIDTH, so the browser displays
+   it 1:1 and Medium never has to upscale a narrow one. */
+#cap {{ display: inline-block; width: {CONTENT_WIDTH - TABLE_MARGIN * 2}px; }}
+table {{
+  border-collapse: collapse; width: 100%; table-layout: auto;
+  font: 400 14.5px/1.5 {SANS}; color: #1a1a1a;
+}}
 thead th {{
-  text-align: left; font-weight: 700; font-size: 12.5px; letter-spacing: .04em;
-  text-transform: uppercase; color: #6b6b6b; padding: 0 16px 9px;
-  border-bottom: 2px solid #2f2f2f; white-space: nowrap;
+  text-align: left; font-weight: 700; font-size: 11.5px; letter-spacing: .04em;
+  text-transform: uppercase; color: #6b6b6b; padding: 0 11px 7px;
+  border-bottom: 2px solid #2f2f2f;
 }}
 /* Upper-casing a header that mixes CJK with Latin looks like a shouting typo. */
-thead th.cjk {{ text-transform: none; letter-spacing: 0; font-size: 13px; }}
-tbody td {{ padding: 9px 16px; border-bottom: 1px solid #e8e8e8; vertical-align: top; }}
+thead th.cjk {{ text-transform: none; letter-spacing: 0; font-size: 12.5px; }}
+tbody td {{ padding: 7px 11px; border-bottom: 1px solid #e8e8e8; vertical-align: top; }}
 tbody tr:last-child td {{ border-bottom: 2px solid #2f2f2f; }}
 td.right, th.right {{ text-align: right; }}
 td.center, th.center {{ text-align: center; }}
-code {{ font: 400 14px {MONO}; background: #f2f2f2; padding: 1px 5px; border-radius: 3px; }}
+code {{ font: 400 13px {MONO}; background: #f2f2f2; padding: 1px 4px; border-radius: 3px; }}
 b {{ font-weight: 700; color: #000; }}
 .ok {{ color: #1a7f45; font-weight: 700; }}
 .no {{ color: #bf2f24; font-weight: 700; }}
@@ -428,7 +442,7 @@ def render_table_png(table: Table, out_path: Path, chrome: str, env: dict) -> Pa
         subprocess.run(
             base_flags
             + [
-                "--force-device-scale-factor=2",
+                f"--force-device-scale-factor={SCALE}",
                 f"--window-size={width + 8},{height + 8}",
                 f"--screenshot={out_path}",
                 f"file://{page_path}",
@@ -441,7 +455,7 @@ def render_table_png(table: Table, out_path: Path, chrome: str, env: dict) -> Pa
     finally:
         os.unlink(page_path)
 
-    trim_and_pad(out_path, pad=48)
+    trim_and_pad(out_path, pad=TABLE_MARGIN * SCALE)
     return out_path
 
 
@@ -579,6 +593,13 @@ def inline_to_html(text: str) -> str:
     return text
 
 
+# A whole line wrapped in parentheses or italics is an aside about the block
+# above it — a unit note, a source credit — not part of the argument.
+NOTE_LINE = re.compile(r"^(?:\*([^*].*?)\*|（(.*)）|\((.*)\))$")
+CAP_MARK = "<!--CAP-->"
+GLOSSARY_HEADINGS = {"專有名詞", "Glossary"}
+
+
 def markdown_to_html(markdown: str, lang: str) -> str:
     """Deliberately minimal: only the constructs Medium accepts on import.
     Tables are already gone by this point."""
@@ -586,6 +607,9 @@ def markdown_to_html(markdown: str, lang: str) -> str:
     body: list[str] = []
     i = 0
     list_open: str | None = None
+    last_figure: int | None = None  # index in `body`, still open for a caption
+    after_h1 = False
+    in_glossary = False
 
     def close_list() -> None:
         nonlocal list_open
@@ -606,6 +630,7 @@ def markdown_to_html(markdown: str, lang: str) -> str:
                 i += 1
             i += 1
             body.append(f"<pre><code>{html.escape(chr(10).join(code))}</code></pre>")
+            last_figure, after_h1 = None, False
             continue
 
         if not stripped:
@@ -621,6 +646,7 @@ def markdown_to_html(markdown: str, lang: str) -> str:
         if re.fullmatch(r"-{3,}|\*{3,}", stripped):
             close_list()
             body.append("<hr>")
+            last_figure, after_h1 = None, False
             i += 1
             continue
 
@@ -628,7 +654,12 @@ def markdown_to_html(markdown: str, lang: str) -> str:
         if heading:
             close_list()
             level = len(heading.group(1))
-            body.append(f"<h{level}>{inline_to_html(heading.group(2))}</h{level}>")
+            text = heading.group(2)
+            body.append(f"<h{level}>{inline_to_html(text)}</h{level}>")
+            last_figure = None
+            after_h1 = level == 1
+            if level <= 2:
+                in_glossary = text.strip() in GLOSSARY_HEADINGS
             i += 1
             continue
 
@@ -638,10 +669,32 @@ def markdown_to_html(markdown: str, lang: str) -> str:
             alt = html.escape(image.group(1), quote=True)
             body.append(
                 f'<figure><img src="{html.escape(image.group(2), quote=True)}" alt="{alt}">'
-                f"<figcaption>{inline_to_html(image.group(1))}</figcaption></figure>"
+                f"<figcaption>{inline_to_html(image.group(1))}{CAP_MARK}</figcaption></figure>"
             )
+            last_figure = len(body) - 1
+            after_h1 = False
             i += 1
             continue
+
+        # Unit notes and source credits belong to the figure above them: as a
+        # caption Medium renders them small and grey instead of as body copy.
+        note = NOTE_LINE.fullmatch(stripped)
+        if note and not after_h1:
+            inner = next(g for g in note.groups() if g is not None)
+            rendered = inline_to_html(inner)
+            if last_figure is not None:
+                figure = body[last_figure]
+                separator = " · " if not figure.endswith(f"<figcaption>{CAP_MARK}</figcaption></figure>") else ""
+                body[last_figure] = figure.replace(CAP_MARK, f"{separator}{rendered}{CAP_MARK}")
+            else:
+                close_list()
+                body.append(f'<p class="aux">{rendered}</p>')
+            i += 1
+            continue
+
+        # Anything below is real content, so the figure above stops accepting
+        # captions and the subtitle slot after the title is spent.
+        last_figure, after_h1 = None, False
 
         if stripped.startswith("> "):
             close_list()
@@ -656,7 +709,7 @@ def markdown_to_html(markdown: str, lang: str) -> str:
         if bullet:
             if list_open != "ul":
                 close_list()
-                body.append("<ul>")
+                body.append('<ul class="glossary">' if in_glossary else "<ul>")
                 list_open = "ul"
             body.append(f"<li>{inline_to_html(bullet.group(1))}</li>")
             i += 1
@@ -677,6 +730,7 @@ def markdown_to_html(markdown: str, lang: str) -> str:
         i += 1
 
     close_list()
+    body = [block.replace(CAP_MARK, "") for block in body]
     title = re.search(r"^#\s+(.*)", markdown, re.M)
     return (
         "<!doctype html>\n"
@@ -685,19 +739,25 @@ def markdown_to_html(markdown: str, lang: str) -> str:
         '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
         f"<title>{html.escape(title.group(1)) if title else 'Article'}</title>\n"
         "<style>\n"
-        f"body {{ max-width: 720px; margin: 3rem auto; padding: 0 1.25rem;\n"
-        f"  font: 400 19px/1.7 {SANS}; color: #242424; }}\n"
-        "h1 { font-size: 2.1rem; line-height: 1.25; margin: 2.5rem 0 .75rem; }\n"
-        "h2 { font-size: 1.55rem; margin: 2.5rem 0 .5rem; }\n"
-        "h3 { font-size: 1.2rem; margin: 2rem 0 .5rem; }\n"
-        f"pre {{ background: #f6f6f6; padding: 1rem; overflow-x: auto;\n"
-        f"  font: 400 15px/1.5 {MONO}; }}\n"
+        f"body {{ max-width: {CONTENT_WIDTH}px; margin: 3rem auto; padding: 0 1.25rem;\n"
+        f"  font: 400 17px/1.75 {SANS}; color: #242424; }}\n"
+        "h1 { font-size: 1.85rem; line-height: 1.3; margin: 2.5rem 0 .75rem; }\n"
+        "h2 { font-size: 1.32rem; margin: 2.75rem 0 .5rem; }\n"
+        "h3 { font-size: 1.06rem; margin: 2rem 0 .4rem; }\n"
+        "p, li { margin: .85rem 0; }\n"
+        f"pre {{ background: #f6f6f6; padding: .9rem 1rem; overflow-x: auto;\n"
+        f"  font: 400 13.5px/1.55 {MONO}; }}\n"
         f"code {{ background: #f2f2f2; padding: 1px 5px; font: 400 .85em {MONO}; }}\n"
         "pre code { background: none; padding: 0; }\n"
-        "img { max-width: 100%; height: auto; }\n"
-        "figure { margin: 2rem 0; }\n"
-        "figcaption { font-size: .8rem; color: #6b6b6b; text-align: center;\n"
-        "  margin-top: .5rem; }\n"
+        "img { max-width: 100%; height: auto; display: block; margin: 0 auto; }\n"
+        "figure { margin: 1.85rem 0; }\n"
+        "figcaption { font-size: .78rem; line-height: 1.5; color: #757575;\n"
+        "  text-align: center; margin-top: .55rem; }\n"
+        "/* Unit notes, source credits and the glossary are reference material:\n"
+        "   at body size they compete with the argument for attention. */\n"
+        ".aux { font-size: .82rem; line-height: 1.6; color: #757575; }\n"
+        "ul.glossary { font-size: .87rem; line-height: 1.65; color: #3d3d3d; }\n"
+        "ul.glossary li { margin: .5rem 0; }\n"
         "blockquote { border-left: 3px solid #242424; margin: 1.5rem 0;\n"
         "  padding: 0 0 0 1.25rem; color: #4a4a4a; }\n"
         "hr { border: none; border-top: 1px solid #e6e6e6; margin: 2.5rem 0; }\n"
