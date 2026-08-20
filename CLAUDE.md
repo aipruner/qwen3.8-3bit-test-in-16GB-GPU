@@ -25,12 +25,15 @@ Copy the author's existing posts, do not invent a new persona.
 
 ```bash
 ./ops/qwen38.sh safe           # daily driver: 24K native MTP (stock full-cuda)
-./ops/qwen38.sh dflash         # DFlash 2 at 8K (needs local/llama.cpp:dflash2-cuda)
+./ops/qwen38.sh safe-ngram     # 24K MTP + ngram-mod (dflash2 image)
+./ops/qwen38.sh dflash         # DFlash 2 at 8K q8_0 n-max 4
+./ops/qwen38.sh dflash-ngram   # DFlash 2 + ngram at 8K q4_0 n-max 3
 ./ops/qwen38.sh status
 python3 harness/specspeed.py
+python3 harness/ngramdemo.py
 python3 harness/mathtest.py tool medium
 python3 harness/quixfix.py
-SPEC_TAG=dflash2 ./harness/run_dflash2_suite.sh
+SPEC_TAG=mtp-ngram ./harness/run_ngram_suite.sh
 ```
 
 Rebuild the DFlash 2 image after pulling llama.cpp PR #27342:
@@ -84,3 +87,9 @@ DFlash 2 quality vs that 24K MTP baseline (2026-08-21, logs in
 math+tool 7/8 vs 8/8 (Q2 truncated at 8K); think-only 3/8 vs 4/8;
 Tetris avg 38 s, `node --check` 2/3. Mean 8K specspeed 92.2 vs MTP 97.2
 tokens/sec; Chinese prose 62.7 vs 80.7. Details: `docs/05-dflash2.md`.
+
+ngram-mod stacked on both (same night, `docs/06-ngram.md`):
+`safe-ngram` 24K q8_0 vs `dflash-ngram` 8K q4_0 n-max 3.
+QuixBugs 28/29 in 492 s (mean 105.2 tokens/sec) vs 24/29 in 783 s (78.0).
+Salted specspeed mean 94.6 vs 78.0. 16K q4_0 DFlash+ngram 32-token probe
+was a false FITS (600-token write 5.1 tokens/sec). Agent winner: MTP+ngram.

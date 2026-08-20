@@ -1,0 +1,6 @@
+# specspeed tag=dflash-ngram effort=low max_tokens=600 url=http://127.0.0.1:18038/v1
+code     wall=   5.2s  gen=  94.7 tok/s  read=   133 tok/s  out=434  draft_n=350 draft_n_accepted=318
+code2    wall=  10.1s  gen=  89.3 tok/s  read=   147 tok/s  out=600  draft_n=525 draft_n_accepted=424
+prose_en wall=   9.5s  gen=  68.1 tok/s  read=   160 tok/s  out=600  draft_n=746 draft_n_accepted=350
+prose_zh wall=  10.7s  gen=  59.7 tok/s  read=   178 tok/s  out=600  draft_n=867 draft_n_accepted=308
+mean gen = 78.0 tok/s

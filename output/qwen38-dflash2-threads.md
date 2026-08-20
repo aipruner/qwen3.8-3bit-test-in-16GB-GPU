@@ -1,60 +1,48 @@
-# Threads — DFlash2 實測（3 則）
-
-上一篇 Threads 是 24K 原生 MTP。這三則是 2026-08-21 用同一個 3-bit 檔重跑 DFlash 2 之後的數字。不要跟上一篇的 27/29、8/8 混在同一則裡講成「又測了一次更快」。
+# Threads — ngram + MTP vs ngram + DFlash 2（3 則）
 
 ---
 
-## Post 1 — 105K 那組旗標，換到我的檔會溢出
+## Post 1 — ngram 不是第二顆模型
 
-上一篇我用 5070 Ti 16GB 跑 Qwen3.8-27B 的 3-bit（UD-Q3_K_XL），靠模型自己的 MTP。
+Reddit 有人在 16GB 卡上把 ngram-mod 疊在 MTP 或 DFlash 2 上，context 開到十萬。
 
-兩天後 Reddit 有人在 4080 16GB 上用 DFlash 2 草稿把 context 開到 105K。草稿檔是現成的，約 1.1 GB。
+ngram-mod 不是草稿模型。llama.cpp 在記憶體裡放一張約 400 萬格的雜湊表，大約 16 MB RAM，幾乎不佔 VRAM。最近 N 個 token 以前出現過，就把上次後面接的提出來。主模型還是要驗收。
 
-我沒換量化。還是那個 3-bit 檔。
+JSON 工具呼叫這種重複形狀它猜得準。沒見過的中文散文幾乎幫不上。
 
-現成的 llama.cpp 載不進 DFlash 2：expected 81 tensors, got 58。要自己編 PR #27342。
+它可以跟 MTP 或 DFlash 2 用逗號疊在一起，但這兩種神經草稿還是只能選一個。ngram 也不會讓 KV cache 變便宜。
 
-編完之後，對方那組 n-max 5、q5_1、105K，在我這個檔上會溢出。服務還是會起來，生成速度掉到每秒 2 到 4 個 token。WSL2 不報 OOM，/health 照樣回 ok。
-
-真正站得住的工作點是 8K、q8_0、n-max 4。VRAM 約 15,069 MiB。對方能開 105K，是因為目標量化比較瘦，不是 DFlash 2 魔法。
+我沒換量化。還是上一篇的 UD-Q3_K_XL。Lookup 尺寸照抄對方：n-min 4、n-max 8、n-match 32。
 
 ---
 
-## Post 2 — 8K 對 8K，沒有比較快
+## Post 2 — 能開比較大的還是 ngram + MTP
 
-同一份編譯、同一個 8K、同一組 prompt（有加隨機鹽，避免 cache 灌水），各寫約 600 個 token。
+同一份 llama.cpp，探針低於每秒 60 個 token 當溢出。
 
-生成速度（tokens/秒）：
+ngram + MTP：8K / 16K / 24K q8_0 都過，32K 溢出。工作點 24K。
 
-- Python：DFlash 2 114.4，MTP 110.0
-- HTML：110.4 vs 121.6
-- 英文散文：81.3 vs 76.7
-- 繁中散文：62.7 vs 80.7
-- 平均：92.2 vs 97.2
+ngram + DFlash 2：q8_0 從 8K 到 16K 全溢出。16K q4_0 的 32 token 探針寫 60.8，拿去寫 600 個 token 掉到每秒 5.1 個。探針會騙人。真正站得住的是 8K、q4_0、n-max 3，600 token 生成速度 92。
 
-中文散文的草稿接受率只有 33%。MTP 猜固定格式本來就準，上一篇寫過工具呼叫 113、中文散文 80。DFlash 2 在中文上更差。
+ngram 沒把窗口變大。對方 105K 是目標檔比較瘦。
 
-你付出的是 context：24K 變成 8K。平均速度在誤差範圍內。
+加鹽的 600 token 平均生成速度：ngram + MTP 94.6，ngram + DFlash 2 78.0。繁中散文 73.7 vs 59.7。出 25 行同款 JSON 工具呼叫：124.5 vs 109.1。固定格式兩邊都比散文快。
 
 ---
 
-## Post 3 — 同一套題庫：修 bug 還能修，數學被 8K 切到
+## Post 3 — 當 agent，也是 ngram + MTP
 
-同一套 harness，取樣沒改。
+同一套讀檔寫檔跑測試。QuixBugs 29 題。
 
-QuixBugs：28/29，738 秒，165 次工具呼叫，格式 0 錯，0 次改測試。上一篇是 27/29、589 秒。失敗的還是 lis。subsequences 這次過了，temperature 0.7 單次不能當成「比較會修」。修 bug 迴圈裡平均生成速度 60.5，上一篇約 100。
+ngram + MTP（24K）：28/29，492 秒，171 次工具呼叫，迴圈裡平均 105.2 tokens/秒。失敗仍是 lis。格式 0 錯，0 次改測試。
 
-俄羅斯方塊平均 38 秒（上一篇 35），三次功能檢查都過，node --check 2/3，有一次 else 語法錯。
+ngram + DFlash 2（8K）：24/29，783 秒。多掛四題。平均 78.0。格式 0 錯，0 次改測試。
 
-數學八道，答案還是本機先算過：
+上一篇沒加 ngram 的 MTP 是 27/29、589 秒。28 對 27 是 temperature 0.7 單次，不要寫成 ngram 比較會修。能講的是 24K 比較快、8K 比較容易卡住。
 
-- 只讓它想：3/8，451 秒。五題失敗全部是想完沒講完。
-- 給 Python 工具：7/8，336 秒。上一篇 8/8、123 秒。掛掉的是 Pell 方程，169 秒、兩次工具，沒吐 ANSWER。8K 被思考加工具紀錄填滿。
+數學給 Python 工具：MTP 那組 7/8（Pell 沒講完），DFlash 那組 8/8 但多花時間。單次不要倒過來當結論。
 
-給工具還是比給思考時間划算。這次多一句：工具迴圈也要吃 context。砍窗口會切到會東想西想的題。
+日常我開 24K 的 safe 或 safe-ngram。
 
-日常我還是開 24K 原生 MTP。DFlash 2 值得試的條件是你換更瘦的目標量化，VRAM 同時塞得下草稿和長 context。
-
-完整數據與程式碼：https://github.com/aipruner/qwen3.8-3bit-test-in-16GB-GPU
-上一篇 Medium：https://medium.com/@aipruner1991/qwen3-8-27b%E5%AF%A6%E6%B8%AC-5070ti-16gb-gpu-e72cddbb78e1
+完整數據：https://github.com/aipruner/qwen3.8-3bit-test-in-16GB-GPU
 #Qwen38 #LocalLLM

@@ -1,0 +1,41 @@
+{
+  "tag": "dflash-ngram",
+  "rows": {
+    "unique": {
+      "wall": 4.52,
+      "gen": 103.2,
+      "read": 179.7,
+      "out": 400,
+      "draft_n": 353,
+      "draft_n_accepted": 304,
+      "finish": "length"
+    },
+    "repeat1": {
+      "wall": 6.53,
+      "gen": 106.4,
+      "read": 120.2,
+      "out": 400,
+      "draft_n": 348,
+      "draft_n_accepted": 303,
+      "finish": "length"
+    },
+    "repeat2": {
+      "wall": 4.07,
+      "gen": 111.9,
+      "read": 26.8,
+      "out": 400,
+      "draft_n": 340,
+      "draft_n_accepted": 309,
+      "finish": "length"
+    },
+    "tools": {
+      "wall": 4.29,
+      "gen": 109.1,
+      "read": 230.4,
+      "out": 400,
+      "draft_n": 312,
+      "draft_n_accepted": 295,
+      "finish": "length"
+    }
+  }
+}

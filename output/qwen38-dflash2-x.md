@@ -1,42 +1,33 @@
-# X — one Premium post (English)
+# X — ngram + MTP vs ngram + DFlash 2
 
 Copy everything below the line into a single X Premium post.
 
 ---
 
-Follow-up to the 3-bit Qwen3.8-27B test on a 5070 Ti 16GB.
+Follow-up. Same 3-bit Qwen3.8-27B file. Same 5070 Ti 16GB. This time I stacked ngram-mod the way the r/LocalLLaMA 105K post did — on MTP, and on DFlash 2 — and asked which window is larger and which one acts like an agent.
 
-Someone on r/LocalLLaMA ran DFlash 2 + ngram-mod on a 4080 16GB and opened 105K context. Public draft GGUF, ~1.1 GB. I kept my file: same UD-Q3_K_XL, same card class, same harness.
+ngram-mod is not a second model. llama.cpp keeps a ~4M-slot hash table of recent token n-grams. About 16 MB RAM. Almost no VRAM. If the last N tokens have been seen, it proposes what followed last time. The target still verifies.
 
-Stock llama.cpp will not load DFlash 2. expected 81 tensors, got 58. You need PR #27342.
+It helps repeated shapes: JSON tool calls. Unique Chinese prose: almost nothing. It stacks with MTP or DFlash 2 via a comma. You still pick one neural draft. It does not cheapen KV cache.
 
-Their n-max 5 / q5_1 / 105K flags spill on this quant. Server still starts. /health still says ok. Generation drops to 2–4 tok/s. WSL2 does not report OOM.
+ngram + MTP: 24K q8_0 holds. 32K spills.
 
-Working point that actually holds: 8K, q8_0, n-max 4. ~15,069 MiB used. They got 105K because the target quant was thinner, not because DFlash 2 is magic.
+ngram + DFlash 2: 8K–16K q8_0 all spill. A 16K q4_0 32-token probe said 60.8 tok/s. A 600-token write: 5.1. The probe lies. Working point that actually held: 8K, q4_0, n-max 3, 92.0 tok/s on 600 tokens.
 
-Fair 8K-vs-8K specspeed, cache-busted, same llama.cpp build:
+ngram did not grow the window. Their 105K used a thinner quant.
 
-Python 114 vs 110. HTML 110 vs 122. English prose 81 vs 77. Chinese prose 63 vs 81. Mean 92 vs 97 tok/s.
+Salted 600-token mean: ngram+MTP 94.6 vs ngram+DFlash2 78.0. Chinese prose 73.7 vs 59.7. 25 lines of lookalike JSON tool calls: 124.5 vs 109.1.
 
-Chinese draft accept rate: 33%. MTP was already better at fixed formats. DFlash 2 does not win that bet on this file.
+QuixBugs, same ReAct harness:
 
-Same quality suite:
+ngram+MTP 24K: 28/29. 492s. 171 tool calls. Mean 105.2 tok/s in the loop. Miss: lis. Format never broke. Never cheated.
 
-QuixBugs 28/29 vs 27/29 last time. 738s vs 589s. 165 tool calls. Format never broke. Never cheated the tests. lis failed both times.
+ngram+DFlash2 8K: 24/29. 783s. Four extra misses. Mean 78.0.
 
-Tetris ~38s avg vs 35s. Feature checks 14/14. node --check 2/3 (one Unexpected token else).
+Previous MTP-only run was 27/29 in 589s. Don't spin 28 vs 27 as "ngram repairs better." Temperature 0.7, one sample. The 8K window is what costs four programs and 291 extra seconds.
 
-8 math problems, answers brute-forced locally first.
-
-Think only: 3/8. 451s. All five misses were "thought until the budget, never finished."
-
-Python tool: 7/8. 336s. Last time 8/8 in 123s. The miss is the Pell equation. 169s, two tool calls, no ANSWER. 8K filled up. Truncated.
-
-Tools are still cheaper than thinking time. New sentence: the tool loop consumes context too. Cut the window from 24K to 8K and you clip the problem that thinks, calls, thinks again.
-
-Daily driver stays 24K native MTP. DFlash 2 is worth it if you switch to a thinner target that still has VRAM for the draft and a long context. That is what their post was doing. Not this file.
+Daily driver stays 24K: safe or safe-ngram.
 
 Code + logs: github.com/aipruner/qwen3.8-3bit-test-in-16GB-GPU
-Previous: https://medium.com/@aipruner1991/qwen-3-8-27b-real-test-5070ti-16gb-gpu-3d1414dd0564
 
 #Qwen38 #LocalLLM

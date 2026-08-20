@@ -1,0 +1,5 @@
+# ngramdemo tag=dflash-ngram effort=low max_tokens=400 url=http://127.0.0.1:18038/v1
+unique       wall=   4.5s  gen= 103.2 tok/s  read=   180  out=400  draft=353/304
+repeat-1     wall=   6.5s  gen= 106.4 tok/s  read=   120  out=400  draft=348/303
+repeat-2     wall=   4.1s  gen= 111.9 tok/s  read=    27  out=400  draft=340/309
+tools-json   wall=   4.3s  gen= 109.1 tok/s  read=   230  out=400  draft=312/295

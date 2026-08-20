@@ -11,7 +11,8 @@ live in `output/` (mostly gitignored). Raw measurements live in
 | [02-operations.md](02-operations.md) | 2026-08-19 | How to start/stop. **Profiles table is stale** — `ops/qwen38.sh` is the source of truth. `agent` at 32K spills; daily driver is `safe` (24K MTP). DFlash 2 is `dflash` |
 | [03-research-report.md](03-research-report.md) | 2026-08-19 | Background research dump |
 | [04-benchmarks.md](04-benchmarks.md) | 2026-08-19 | First MTP benchmark notes |
-| [05-dflash2.md](05-dflash2.md) | 2026-08-21 | **Read this before changing DFlash flags.** Fit ladder, specspeed, quality suite |
+| [05-dflash2.md](05-dflash2.md) | 2026-08-21 | DFlash 2 without ngram. Fit ladder + quality suite |
+| [06-ngram.md](06-ngram.md) | 2026-08-21 | **ngram-mod stacked on MTP vs DFlash 2.** Read before writing the follow-up article |
 | [sources/reddit-buffmcbighuge-dflash2.md](sources/reddit-buffmcbighuge-dflash2.md) | 2026-08-20 | Clipping of the r/LocalLLaMA post. Not our measurements |
 
 Launcher source of truth: `ops/qwen38.sh` in this repo.

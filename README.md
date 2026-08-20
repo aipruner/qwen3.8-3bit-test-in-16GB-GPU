@@ -2,14 +2,15 @@
 
 The code and raw results from measuring **Qwen3.8-27B at 3-bit on a single RTX 5070 Ti (16GB)**.
 
-Two server configs, same target GGUF, same machine:
+Two server configs, same target GGUF, same machine — then a ngram-mod stack on each:
 
-1. **Native MTP** (Multi-Token Prediction) at 24K context — 2026-08-19. This is the daily driver.
-2. **DFlash 2** at 8K context — 2026-08-21. A retest of a viral r/LocalLLaMA recipe, *not* a speed upgrade on this file.
+1. **Native MTP** (Multi-Token Prediction) at 24K context — 2026-08-19. Daily driver: `safe`.
+2. **DFlash 2** at 8K — 2026-08-21, no ngram. Not a speed upgrade on this file.
+3. **ngram-mod stacked on both** — 2026-08-21 night. `safe-ngram` (24K) vs `dflash-ngram` (8K q4_0 n-max 3). Agent winner: MTP + ngram.
 
 > 這裡是實測程式碼與原始結果。第一篇是 24K 原生 MTP；後來網路上有人用 DFlash 2 在 16GB 卡上開到 105K，我拿**同一個** 3-bit 檔重跑，結論寫在下面。
 
-If you are an agent picking this repo up: read **`CLAUDE.md`**, then **`docs/README.md`**, then **`docs/05-dflash2.md`**. Do not copy Reddit flags onto `UD-Q3_K_XL`.
+If you are an agent picking this repo up: read **`CLAUDE.md`**, then **`docs/README.md`**, then **`docs/06-ngram.md`**. Do not copy Reddit 105K flags onto `UD-Q3_K_XL`.
 
 ---
 
@@ -78,7 +79,22 @@ Agent-loop mean generation speed on QuixBugs was 60.5 tokens/sec (MTP 24K run wa
 
 Logs: `harness/results/dflash2/` and `harness/results/mtp/specspeed-8k.log`. Narrative: `docs/05-dflash2.md`.
 
-ngram-mod is **not** the default. llama.cpp prefix cache inflates unsalt-ed ngram numbers. `harness/specspeed.py` salts every prompt. Profile `dflash-ngram` exists; the quality suite did not run on it.
+### 2026-08-21 night — ngram-mod on MTP vs on DFlash 2
+
+ngram-mod (llama.cpp PR #19164) is a hash table of recent token n-grams, ~16 MB RAM, not a second model. It stacks as `draft-mtp,ngram-mod` or `draft-dflash,ngram-mod`. It does not buy KV cache. `specspeed.py` salts prompts; `ngramdemo.py` has a separate repeat row that is not a fair speed.
+
+Max window on this file: MTP + ngram still **24K q8_0**. DFlash 2 + ngram's 16K q4_0 32-token probe (60.8) was a false FITS — 600-token write ran at 5.1 tokens/sec. Working DFlash + ngram point: **8K q4_0 n-max 3** (92.0 tokens/sec at 600 tokens).
+
+| | ngram + MTP (`safe-ngram`) | ngram + DFlash 2 (`dflash-ngram`) |
+|---|---|---|
+| Window | 24K q8_0 n-max 4 | 8K q4_0 n-max 3 |
+| specspeed mean (salted) | **94.6** tokens/sec | **78.0** |
+| Chinese prose | 73.7 | 59.7 |
+| 25-line JSON tool-call demo | 124.5 | 109.1 |
+| Math + Python tool | 7/8 · 254 s | 8/8 · 310 s |
+| QuixBugs | **28/29** · 492 s · 171 calls · mean 105.2 tokens/sec · fail `lis` | **24/29** · 783 s · 162 calls · mean 78.0 · five fails |
+
+**Takeaway:** on this 3-bit file, ngram + MTP is the agent stack. ngram + DFlash 2 does not open a larger window and misses four extra QuixBugs programs. Logs: `harness/results/mtp-ngram/`, `harness/results/dflash-ngram/`. Narrative: `docs/06-ngram.md`.
 
 ---
 
@@ -93,6 +109,7 @@ ngram-mod is **not** the default. llama.cpp prefix cache inflates unsalt-ed ngra
 | `harness/mathtest.py` | 8 hard math problems, `reason` or `tool` |
 | `harness/truth.py` | Brute-forces the math ground truth locally |
 | `harness/specspeed.py` | Cache-busted generation speed by output type (code / HTML / EN prose / ZH prose) |
+| `harness/ngramdemo.py` | unique / repeat / tool-json demo for ngram-mod (do not publish `repeat-2` as fair speed) |
 | `harness/toolstress.py` | Nested-schema tool-call stress test |
 | `harness/ctx3.py` | Context-length speed scan, salted |
 | `harness/fit.sh`, `fitlean.sh`, `fitdflash.sh` | VRAM fit ladders. Health = measured generation speed, not `/health` |
@@ -108,6 +125,7 @@ Fixtures: `harness/proj_template/`, `harness/proj_hard/`. Charts: `harness/chart
 
 ```bash
 ./ops/qwen38.sh safe       # 24K native MTP — daily driver, stock image
+./ops/qwen38.sh safe-ngram # 24K MTP + ngram-mod (dflash2 image)
 ./ops/qwen38.sh status     # VRAM, health, endpoint
 ./ops/qwen38.sh stop
 ```
@@ -118,6 +136,8 @@ DFlash 2 (one-time image build, then):
 ./ops/build-dflash2-image.sh
 ./ops/qwen38.sh dflash
 SPEC_TAG=dflash2 ./harness/run_dflash2_suite.sh
+./ops/qwen38.sh dflash-ngram   # 8K q4_0 n-max 3
+SPEC_TAG=dflash-ngram ./harness/run_ngram_suite.sh
 ```
 
 Then:
@@ -130,6 +150,7 @@ python3 harness/mathtest.py tool medium
 python3 harness/mathtest.py reason medium
 python3 harness/tetris.py 3
 python3 harness/specspeed.py
+python3 harness/ngramdemo.py
 python3 harness/truth.py
 ```
 

@@ -1,0 +1,6 @@
+# specspeed tag=mtp-ngram effort=low max_tokens=600 url=http://127.0.0.1:18038/v1
+code     wall=   8.3s  gen= 103.8 tok/s  read=   149 tok/s  out=567  draft_n=596 draft_n_accepted=421
+code2    wall=   5.6s  gen= 120.5 tok/s  read=   138 tok/s  out=600  draft_n=522 draft_n_accepted=468
+prose_en wall=   8.1s  gen=  80.5 tok/s  read=   177 tok/s  out=600  draft_n=830 draft_n_accepted=391
+prose_zh wall=   8.8s  gen=  73.7 tok/s  read=   204 tok/s  out=600  draft_n=907 draft_n_accepted=371
+mean gen = 94.6 tok/s

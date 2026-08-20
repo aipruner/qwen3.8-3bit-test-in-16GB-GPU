@@ -1,0 +1,2 @@
+# fitngram 2026-08-21T02:32:26+08:00  image=local/llama.cpp:dflash2-cuda  target=Qwen3.8-27B-UD-Q3_K_XL.gguf
+df-ng-8k-q80       spec=draft-dflash,ngram-mod       ctx=8192   kv=q8_0 used=15402 free= 594 gen=   4.3 SPILLED

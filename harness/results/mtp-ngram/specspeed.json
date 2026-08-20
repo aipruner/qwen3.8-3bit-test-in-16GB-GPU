@@ -1,0 +1,95 @@
+{
+  "tag": "mtp-ngram",
+  "effort": "low",
+  "mean_gen": 94.6,
+  "rows": [
+    {
+      "name": "code",
+      "wall": 8.28,
+      "gen": 103.8,
+      "read": 148.7,
+      "out": 567,
+      "inn": 81,
+      "finish": "stop",
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 81,
+        "prompt_ms": 544.709,
+        "prompt_per_token_ms": 6.724802469135802,
+        "prompt_per_second": 148.70325256237737,
+        "predicted_n": 567,
+        "predicted_ms": 5455.354,
+        "predicted_per_token_ms": 9.638434628975265,
+        "predicted_per_second": 103.75128726751737,
+        "draft_n": 596,
+        "draft_n_accepted": 421
+      }
+    },
+    {
+      "name": "code2",
+      "wall": 5.59,
+      "gen": 120.5,
+      "read": 138.5,
+      "out": 600,
+      "inn": 74,
+      "finish": "length",
+      "timings": {
+        "cache_n": 30,
+        "prompt_n": 44,
+        "prompt_ms": 317.63,
+        "prompt_per_token_ms": 7.218863636363636,
+        "prompt_per_second": 138.52595787551553,
+        "predicted_n": 600,
+        "predicted_ms": 4970.474,
+        "predicted_per_token_ms": 8.29795325542571,
+        "predicted_per_second": 120.51164536822847,
+        "draft_n": 522,
+        "draft_n_accepted": 468
+      }
+    },
+    {
+      "name": "prose_en",
+      "wall": 8.08,
+      "gen": 80.5,
+      "read": 177.3,
+      "out": 600,
+      "inn": 79,
+      "finish": "length",
+      "timings": {
+        "cache_n": 30,
+        "prompt_n": 49,
+        "prompt_ms": 276.317,
+        "prompt_per_token_ms": 5.639122448979592,
+        "prompt_per_second": 177.33255644784794,
+        "predicted_n": 600,
+        "predicted_ms": 7438.398,
+        "predicted_per_token_ms": 12.418026711185309,
+        "predicted_per_second": 80.5280922048,
+        "draft_n": 830,
+        "draft_n_accepted": 391
+      }
+    },
+    {
+      "name": "prose_zh",
+      "wall": 8.77,
+      "gen": 73.7,
+      "read": 204.4,
+      "out": 600,
+      "inn": 87,
+      "finish": "length",
+      "timings": {
+        "cache_n": 30,
+        "prompt_n": 57,
+        "prompt_ms": 278.886,
+        "prompt_per_token_ms": 4.892736842105264,
+        "prompt_per_second": 204.38458725070458,
+        "predicted_n": 600,
+        "predicted_ms": 8129.654,
+        "predicted_per_token_ms": 13.572043405676128,
+        "predicted_per_second": 73.68087251929786,
+        "draft_n": 907,
+        "draft_n_accepted": 371
+      }
+    }
+  ]
+}

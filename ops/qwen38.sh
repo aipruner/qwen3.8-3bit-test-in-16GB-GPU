@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Qwen3.8-27B on RTX 5070 Ti 16GB (WSL2) — llama-server launcher
-# Usage: qwen38.sh [agent|long|safe|vision|dflash|dflash-ngram|stop|status|logs|url]
+# Usage: qwen38.sh [agent|long|safe|safe-ngram|vision|dflash|dflash-ngram|stop|status|logs|url]
 set -euo pipefail
 
 CONF="${QWEN38_CONF:-$HOME/.config/qwen38.env}"
@@ -31,24 +31,34 @@ COMMON=(-m "/models/${MODEL}" --host 0.0.0.0 --port 8080
 # Native MTP: nextn head is already inside the GGUF (blk.64.nextn.*).
 MTP=(--spec-type draft-mtp --spec-draft-n-max 4)
 
+# ngram-mod (llama.cpp PR #19164): hash recent token n-grams and replay the
+# continuation when the same n-gram reappears. Table is ~16 MiB RAM, not VRAM.
+# Helps repeated JSON / tool-call shapes; unique prose gets almost no boost.
+# Same lookup sizes as the Reddit recipe. n_match=32 (llama.cpp warns if < 16).
+# safe-ngram: 24K MTP + ngram, DFlash 2 image so the build matches dflash-ngram.
+# dflash-ngram: 16K q4_0. 8K q8_0 + ngram spilled when idle VRAM was ~700 MiB.
+NGRAM=(--spec-ngram-mod-n-min 4 --spec-ngram-mod-n-max 8 --spec-ngram-mod-n-match 32)
+MTP_NGRAM=(--spec-type draft-mtp,ngram-mod --spec-draft-n-max 4 "${NGRAM[@]}")
+
 # DFlash 2: extra ~1.1 GiB draft GGUF. On UD-Q3_K_XL the Reddit 105k/q5_1/n-max 5
 # recipe spills on this 16GB card. Measured working point: 8K, q8_0, n-max 4,
 # batch 256 (see harness/results/dflash2/fit-gpu2.log).
 DFLASH=(--spec-type draft-dflash --spec-draft-n-max 4
         --spec-draft-model "/models/${DRAFT}" --n-gpu-layers-draft 99
         -b 256 -ub 128)
-DFLASH_NGRAM=(--spec-type draft-dflash,ngram-mod --spec-draft-n-max 4
+DFLASH_NGRAM=(--spec-type draft-dflash,ngram-mod --spec-draft-n-max 3
         --spec-draft-model "/models/${DRAFT}" --n-gpu-layers-draft 99
         -b 256 -ub 128
-        --spec-ngram-mod-n-min 4 --spec-ngram-mod-n-max 8 --spec-ngram-mod-n-match 32)
+        "${NGRAM[@]}")
 
 case "$PROFILE" in
   agent)  ARGS=("${COMMON[@]}" -c 32768 -ctk q8_0 -ctv q8_0 "${MTP[@]}"); NEED=13300 ;;
   long)   ARGS=("${COMMON[@]}" -c 32768 -ctk q4_0 -ctv q4_0 "${MTP[@]}"); NEED=13300 ;;
   safe)   ARGS=("${COMMON[@]}" -c 24576 -ctk q8_0 -ctv q8_0 "${MTP[@]}"); NEED=13300 ;;
+  safe-ngram) ARGS=("${COMMON[@]}" -c 24576 -ctk q8_0 -ctv q8_0 "${MTP_NGRAM[@]}"); NEED=13300; IMAGE=$DFLASH_IMAGE ;;
   vision) ARGS=("${COMMON[@]}" -c 16384 -ctk q8_0 -ctv q8_0 --mmproj /models/mmproj-F16.gguf); NEED=13300 ;;
   dflash) ARGS=("${COMMON[@]}" -c 8192 -ctk q8_0 -ctv q8_0 "${DFLASH[@]}"); NEED=14000; IMAGE=$DFLASH_IMAGE ;;
-  dflash-ngram) ARGS=("${COMMON[@]}" -c 8192 -ctk q8_0 -ctv q8_0 "${DFLASH_NGRAM[@]}"); NEED=14000; IMAGE=$DFLASH_IMAGE ;;
+  dflash-ngram) ARGS=("${COMMON[@]}" -c 8192 -ctk q4_0 -ctv q4_0 "${DFLASH_NGRAM[@]}"); NEED=14000; IMAGE=$DFLASH_IMAGE ;;
   stop)   docker rm -f "$NAME" >/dev/null 2>&1 && echo "stopped" || echo "not running"; exit 0 ;;
   status)
     docker ps --filter "name=^${NAME}$" --format 'container: {{.Names}}  {{.Status}}  {{.Ports}}'
@@ -58,7 +68,7 @@ case "$PROFILE" in
     exit 0 ;;
   logs)   docker logs -f "$NAME"; exit 0 ;;
   url)    echo "http://${BIND}:${PORT}/v1"; exit 0 ;;
-  *) echo "unknown profile: $PROFILE  (agent|long|safe|vision|dflash|dflash-ngram|stop|status|logs|url)"; exit 1 ;;
+  *) echo "unknown profile: $PROFILE  (agent|long|safe|safe-ngram|vision|dflash|dflash-ngram|stop|status|logs|url)"; exit 1 ;;
 esac
 
 # Stop our own container first so the free-VRAM reading is real.

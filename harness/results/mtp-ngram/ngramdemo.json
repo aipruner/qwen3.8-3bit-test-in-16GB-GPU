@@ -1,0 +1,41 @@
+{
+  "tag": "mtp-ngram",
+  "rows": {
+    "unique": {
+      "wall": 4.21,
+      "gen": 111.6,
+      "read": 193.3,
+      "out": 400,
+      "draft_n": 380,
+      "draft_n_accepted": 315,
+      "finish": "length"
+    },
+    "repeat1": {
+      "wall": 6.83,
+      "gen": 108.6,
+      "read": 125.6,
+      "out": 400,
+      "draft_n": 412,
+      "draft_n_accepted": 312,
+      "finish": "length"
+    },
+    "repeat2": {
+      "wall": 4.47,
+      "gen": 100.6,
+      "read": 27.9,
+      "out": 400,
+      "draft_n": 430,
+      "draft_n_accepted": 298,
+      "finish": "length"
+    },
+    "tools": {
+      "wall": 3.81,
+      "gen": 124.5,
+      "read": 257.7,
+      "out": 400,
+      "draft_n": 342,
+      "draft_n_accepted": 313,
+      "finish": "length"
+    }
+  }
+}

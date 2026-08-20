@@ -1,0 +1,10 @@
+{"tag":"mtp-ng-8k-q80","spec":"draft-mtp,ngram-mod","ctx":8192,"kv":"q8_0","used_mib":14848,"free_mib":1148,"probe":{"gen": 83.9, "read": 109.8, "out": 29, "draft_n": 31, "draft_n_accepted": 23}}
+{"tag":"mtp-ng-16k-q80","spec":"draft-mtp,ngram-mod","ctx":16384,"kv":"q8_0","used_mib":15166,"free_mib":830,"probe":{"gen": 72.8, "read": 116.4, "out": 22, "draft_n": 28, "draft_n_accepted": 18}}
+{"tag":"mtp-ng-24k-q80","spec":"draft-mtp,ngram-mod","ctx":24576,"kv":"q8_0","used_mib":15472,"free_mib":524,"probe":{"gen": 73.8, "read": 117.2, "out": 22, "draft_n": 28, "draft_n_accepted": 18}}
+{"tag":"mtp-ng-32k-q80","spec":"draft-mtp,ngram-mod","ctx":32768,"kv":"q8_0","used_mib":15529,"free_mib":467,"probe":{"gen": 0.1, "read": 8.8, "out": 22, "draft_n": 28, "draft_n_accepted": 18}}
+{"tag":"df-ng-8k-q80","spec":"draft-dflash,ngram-mod","ctx":8192,"kv":"q8_0","used_mib":15500,"free_mib":496,"probe":{"gen": 4.2, "read": 69.2, "out": 23, "draft_n": 28, "draft_n_accepted": 16}}
+{"tag":"df-ng-12k-q80","spec":"draft-dflash,ngram-mod","ctx":12288,"kv":"q8_0","used_mib":15588,"free_mib":408,"probe":{"gen": 3.8, "read": 70.9, "out": 24, "draft_n": 28, "draft_n_accepted": 17}}
+{"tag":"df-ng-16k-q80","spec":"draft-dflash,ngram-mod","ctx":16384,"kv":"q8_0","used_mib":15659,"free_mib":337,"probe":{"gen": 2.5, "read": 48.9, "out": 24, "draft_n": 24, "draft_n_accepted": 18}}
+{"tag":"df-ng-16k-q40","spec":"draft-dflash,ngram-mod","ctx":16384,"kv":"q4_0","used_mib":15455,"free_mib":541,"probe":{"gen": 60.8, "read": 92.4, "out": 32, "draft_n": 30, "draft_n_accepted": 22}}
+{"tag":"df-ng-24k-q40","spec":"draft-dflash,ngram-mod","ctx":24576,"kv":"q4_0","used_mib":15562,"free_mib":434,"probe":{"gen": 0.2, "read": 52.9, "out": 24, "draft_n": 24, "draft_n_accepted": 18}}
+{"tag":"df-ng-8k-q80","spec":"draft-dflash,ngram-mod","ctx":8192,"kv":"q8_0","used_mib":15402,"free_mib":594,"probe":{"gen": 4.3, "read": 70.5, "out": 24, "draft_n": 28, "draft_n_accepted": 17}}

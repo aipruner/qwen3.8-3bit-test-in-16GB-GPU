@@ -1,0 +1,5 @@
+# ngramdemo tag=mtp-ngram effort=low max_tokens=400 url=http://127.0.0.1:18038/v1
+unique       wall=   4.2s  gen= 111.6 tok/s  read=   193  out=400  draft=380/315
+repeat-1     wall=   6.8s  gen= 108.6 tok/s  read=   126  out=400  draft=412/312
+repeat-2     wall=   4.5s  gen= 100.6 tok/s  read=    28  out=400  draft=430/298
+tools-json   wall=   3.8s  gen= 124.5 tok/s  read=   258  out=400  draft=342/313
