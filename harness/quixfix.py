@@ -8,7 +8,7 @@ We use the 31 programs that ship JSON test cases (pure functions).
 import json, os, shutil, subprocess, sys, time, hashlib, argparse
 import requests
 
-BASE = os.environ.get("QWEN_URL", "http://127.0.0.1:8088/v1")
+BASE = os.environ.get("QWEN_URL", "http://127.0.0.1:18038/v1").rstrip("/")
 MODEL = "qwen3.8-27b"
 HERE = os.path.dirname(os.path.abspath(__file__))
 QB = os.path.abspath(os.path.join(HERE, "..", "QuixBugs-master"))

@@ -1,0 +1,2 @@
+{"tag":"mtp4-16k-q51","spec":"draft-mtp","nmax":4,"ctx":16384,"kv":"q5_1","used_mib":13915,"free_mib":395,"probe":{"err": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"}}
+{"tag":"mtp4-24k-q80","spec":"draft-mtp","nmax":4,"ctx":24576,"kv":"q8_0","used_mib":13920,"free_mib":170,"probe":{"err": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"}}

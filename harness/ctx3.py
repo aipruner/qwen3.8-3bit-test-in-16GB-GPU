@@ -1,10 +1,11 @@
-import requests, random, string
-BASE="http://127.0.0.1:8088/v1"
+import os, requests, random, string
+BASE=os.environ.get("QWEN_URL", "http://127.0.0.1:18038/v1").rstrip("/")
+ROOT=BASE.removesuffix("/v1")
 P=("The runtime appends key and value projections to a preallocated buffer instead of "
    "recomputing them for every step, trading memory for compute. Profiling shows the "
    "bottleneck shifting from arithmetic throughput toward memory bandwidth as batch size falls. ")
 def ntok(t):
-    return len(requests.post("http://127.0.0.1:8088/tokenize",json={"content":t},timeout=120).json()["tokens"])
+    return len(requests.post(ROOT+"/tokenize",json={"content":t},timeout=120).json()["tokens"])
 per=ntok(P)
 print("tokens per paragraph:",per)
 print(f"{'ctx_tok':>8} {'pp t/s':>9} {'tg t/s':>8} {'ttft_s':>7}")

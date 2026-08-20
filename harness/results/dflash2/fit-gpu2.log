@@ -1,0 +1,12 @@
+── n3-b256-8k-q80 -c 8192 -ctk q8_0 -ctv q8_0 --spec-draft-n-max 3 -b 256 -ub 128
+  mem=[14920 MiB, 1076 MiB] gen=52.2 read=102.4 draft=24/16 SLOW
+── n4-b256-8k-q80 -c 8192 -ctk q8_0 -ctv q8_0 --spec-draft-n-max 4 -b 256 -ub 128
+  mem=[15069 MiB, 927 MiB] gen=68.2 read=107.8 draft=26/24 FITS
+── n3-b256-8k-q40 -c 8192 -ctk q4_0 -ctv q4_0 --spec-draft-n-max 3 -b 256 -ub 128
+  mem=[14791 MiB, 1205 MiB] gen=65.5 read=105.3 draft=23/22 FITS
+── n5-b256-8k-q40 -c 8192 -ctk q4_0 -ctv q4_0 --spec-draft-n-max 5 -b 256 -ub 128
+  mem=[15090 MiB, 906 MiB] gen=55.6 read=104.3 draft=38/21 SLOW
+── n3-b256-16k-q40 -c 16384 -ctk q4_0 -ctv q4_0 --spec-draft-n-max 3 -b 256 -ub 128
+  mem=[14970 MiB, 1026 MiB] gen=56.2 read=104.3 draft=21/17 SLOW
+── n4-b256-8k-q51 -c 8192 -ctk q5_1 -ctv q5_1 --spec-draft-n-max 4 -b 256 -ub 128
+  mem=[14975 MiB, 1021 MiB] gen=38.4 read=87.9 draft=24/16 SLOW

@@ -2,12 +2,19 @@ __pycache__/
 *.pyc
 *.gguf
 quix_runs/
-tetris_runs/played_*.html
+**/tetris_runs/played_*.html
+**/tetris_runs/tetris_*.html
+**/tetris_runs/t_*.js
+**/quix_runs/
 game_runs/
+QuixBugs-master/
 .DS_Store
+.ruff_cache/
+*.md:Zone.Identifier
 
-# write-ups and research reports live locally only — this repo is code + raw results.
-# Exception: images are tracked so Medium's importer can fetch them over HTTPS.
+# Published Medium images stay in git so the importer can fetch them.
+# Follow-up article drafts are tracked for the next writing session.
+# Older output/ staging files stay local.
 output/*
 !output/images/
-docs/
+!output/qwen38-dflash2-*.md

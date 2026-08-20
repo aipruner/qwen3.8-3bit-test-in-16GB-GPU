@@ -1,0 +1,4 @@
+{"run": 1, "wall": 39.3, "in_tok": 194, "out_tok": 3957, "tg": 113.9, "finish": "stop", "html_lines": 390, "js_lines": 300, "js_syntax": "OK", "features": "14/14", "missing": []}
+{"run": 2, "wall": 37.8, "in_tok": 194, "out_tok": 4021, "tg": 118.9, "finish": "stop", "html_lines": 428, "js_lines": 356, "js_syntax": "OK", "features": "14/14", "missing": []}
+{"run": 3, "wall": 37.9, "in_tok": 194, "out_tok": 3864, "tg": 113.8, "finish": "stop", "html_lines": 377, "js_lines": 325, "js_syntax": "Node.js v22.22.0", "features": "14/14", "missing": []}
+SUMMARY 總wall=115s 總tok=12424 語法OK=2/3

@@ -1,5 +1,5 @@
 import requests, json, re, subprocess, sys, os, time, textwrap
-BASE="http://127.0.0.1:8088/v1"
+BASE=os.environ.get("QWEN_URL", "http://127.0.0.1:18038/v1").rstrip("/")
 SPEC = textwrap.dedent("""\
     做一個完整可玩的俄羅斯方塊，單一 HTML 檔，不要用任何外部函式庫或 CDN。
     只輸出一個 ```html 程式碼區塊，不要任何說明文字。

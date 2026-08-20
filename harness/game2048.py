@@ -1,5 +1,5 @@
 import requests, json, re, subprocess, sys, os, time, textwrap
-BASE="http://127.0.0.1:8088/v1"
+BASE=os.environ.get("QWEN_URL", "http://127.0.0.1:18038/v1").rstrip("/")
 
 SPEC = textwrap.dedent("""\
     請用 Python 實作 2048 的核心邏輯，寫成一個模組。只輸出一個 ```python 程式碼區塊，不要說明文字。

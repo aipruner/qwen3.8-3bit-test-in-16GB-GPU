@@ -1,0 +1,6 @@
+# specspeed tag=mtp-8k-samebuild effort=low max_tokens=600 url=http://127.0.0.1:18038/v1
+code     wall=   5.1s  gen= 110.0 tok/s  read=   184 tok/s  out=514  draft_n=520 draft_n_accepted=386
+code2    wall=   5.6s  gen= 121.6 tok/s  read=   155 tok/s  out=600  draft_n=548 draft_n_accepted=461
+prose_en wall=   8.5s  gen=  76.7 tok/s  read=   168 tok/s  out=600  draft_n=892 draft_n_accepted=375
+prose_zh wall=  11.4s  gen=  80.7 tok/s  read=   211 tok/s  out=600  draft_n=845 draft_n_accepted=386
+mean gen = 97.2 tok/s

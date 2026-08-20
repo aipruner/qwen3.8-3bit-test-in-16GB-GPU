@@ -1,5 +1,5 @@
-import requests, time, sys
-BASE="http://127.0.0.1:8088/v1"
+import os, requests, time, sys
+BASE=os.environ.get("QWEN_URL", "http://127.0.0.1:18038/v1").rstrip("/")
 PROMPTS=[("code","Write a Python class implementing an LRU cache with get/put in O(1). Code only, no explanation."),
          ("prose","Explain in flowing English prose, with no lists and no code, why memory bandwidth limits dense transformer inference."),
          ("code2","Write a single-file HTML page with a canvas that draws an animated bouncing ball. Code only.")]

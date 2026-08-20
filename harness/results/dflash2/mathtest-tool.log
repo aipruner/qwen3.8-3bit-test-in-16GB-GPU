@@ -1,0 +1,9 @@
+Q1 ✓ got=405 truth=405 13s out_tok=1028 tool_calls=1
+Q2 ✗ got=None truth=1766319049 169s out_tok=6959 tool_calls=2
+Q3 ✓ got=0 truth=0 29s out_tok=1736 tool_calls=1
+Q4 ✓ got=5653 truth=5653 28s out_tok=1340 tool_calls=1
+Q5 ✓ got=156 truth=156 30s out_tok=1050 tool_calls=3
+Q6 ✓ got=2142 truth=2142 7s out_tok=137 tool_calls=1
+Q7 ✓ got=589 truth=589 55s out_tok=2074 tool_calls=2
+Q8 ✓ got=21 truth=21 5s out_tok=172 tool_calls=1
+SUMMARY mode=tool effort=medium correct=7/8  總wall=336s 總tok=30280 (in 15784 / out 14496) tool_calls=12

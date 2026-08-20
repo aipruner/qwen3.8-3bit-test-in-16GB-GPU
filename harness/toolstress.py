@@ -1,5 +1,5 @@
-import requests, json
-BASE="http://127.0.0.1:8088/v1"
+import os, requests, json
+BASE=os.environ.get("QWEN_URL", "http://127.0.0.1:18038/v1").rstrip("/")
 TOOLS=[{"type":"function","function":{"name":"create_ticket",
  "description":"Create a support ticket.",
  "parameters":{"type":"object","properties":{

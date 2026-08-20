@@ -1,5 +1,5 @@
 import requests, json, re, subprocess, sys, os, time
-BASE="http://127.0.0.1:8088/v1"
+BASE=os.environ.get("QWEN_URL", "http://127.0.0.1:18038/v1").rstrip("/")
 PROBS=[
  ("Q1","求最小的正整數 n，使得 n! 的十進位表示末尾恰好有 100 個 0。",405),
  ("Q2","求方程式 x^2 - 61*y^2 = 1 的最小正整數解中的 x。",1766319049),

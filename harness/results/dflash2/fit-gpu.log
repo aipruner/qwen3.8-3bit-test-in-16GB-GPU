@@ -1,0 +1,14 @@
+── g-8k-q80-n5 -c 8192 -ctk q8_0 -ctv q8_0 --spec-draft-n-max 5
+  mem=[15764 MiB, 232 MiB] gen=2.8 read=46.9 draft=25/24 SLOW
+── g-8k-q40-n5 -c 8192 -ctk q4_0 -ctv q4_0 --spec-draft-n-max 5
+  mem=[15606 MiB, 390 MiB] gen=4.3 read=59.4 draft=25/19 SLOW
+── g-8k-q51-n5 -c 8192 -ctk q5_1 -ctv q5_1 --spec-draft-n-max 5
+  mem=[15580 MiB, 416 MiB] ERR ReadTimeout: HTTPConnectionPool(host='127.0.0.1', port=18038): Read timed out. (read timeout=40)
+── g-4k-q80-n5 -c 4096 -ctk q8_0 -ctv q8_0 --spec-draft-n-max 5
+  mem=[15588 MiB, 408 MiB] gen=3.9 read=58.9 draft=25/17 SLOW
+── g-8k-q80-n3 -c 8192 -ctk q8_0 -ctv q8_0 --spec-draft-n-max 3
+  mem=[15487 MiB, 509 MiB] gen=46.1 read=80.1 draft=24/16 SLOW
+── g-8k-q80-n7 -c 8192 -ctk q8_0 -ctv q8_0 --spec-draft-n-max 7
+  mem=[15795 MiB, 201 MiB] ERR ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+── g-8k-q80-n5-b256 -c 8192 -ctk q8_0 -ctv q8_0 --spec-draft-n-max 5 -b 256 -ub 128
+  mem=[15191 MiB, 805 MiB] gen=50.3 read=100.0 draft=30/16 SLOW

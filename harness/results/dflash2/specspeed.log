@@ -1,0 +1,6 @@
+# specspeed tag=dflash2 effort=low max_tokens=600
+code     wall=5.6s  gen=114.4 tok/s  read=172 tok/s  out=590  draft_n=528 draft_n_accepted=458
+code2    wall=6.1s  gen=110.4 tok/s  read=144 tok/s  out=600  draft_n=587 draft_n_accepted=452
+prose_en wall=8.1s  gen=81.3 tok/s  read=179 tok/s  out=600  draft_n=795 draft_n_accepted=398
+prose_zh wall=13.5s gen=62.7 tok/s  read=199 tok/s  out=600  draft_n=1031 draft_n_accepted=340
+mean gen = 92.2 tok/s

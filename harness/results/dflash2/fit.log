@@ -1,0 +1,122 @@
+# fitdflash 2026-08-21T00:24:47+08:00  target=Qwen3.8-27B-UD-Q3_K_XL.gguf  draft=Qwen3.8-27B-DFlash2-Q4_K_M.gguf
+d5-16k-q51       LOAD_FAILED
+0.00.717.745 W model has unused tensor blk.64.attn_k_norm.weight (size = 1024 bytes) -- ignoring
+0.00.717.747 W model has unused tensor blk.64.ffn_gate.weight (size = 38297600 bytes) -- ignoring
+0.00.717.748 W model has unused tensor blk.64.ffn_down.weight (size = 47349760 bytes) -- ignoring
+0.00.717.749 W model has unused tensor blk.64.ffn_up.weight (size = 38297600 bytes) -- ignoring
+0.00.717.752 W model has unused tensor blk.64.nextn.eh_proj.weight (size = 27852800 bytes) -- ignoring
+0.00.717.754 W model has unused tensor blk.64.nextn.enorm.weight (size = 20480 bytes) -- ignoring
+0.00.717.755 W model has unused tensor blk.64.nextn.hnorm.weight (size = 20480 bytes) -- ignoring
+0.00.717.766 W model has unused tensor blk.64.nextn.shared_head_norm.weight (size = 20480 bytes) -- ignoring
+0.16.394.685 I cmn          init: llama threadpool init, n_threads = 20
+0.16.730.411 I common_speculative_init_result: loading draft model '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.17.134.997 E llama_model_load: error loading model: done_getting_tensors: wrong number of tensors; expected 81, got 58
+0.17.135.020 E llama_model_load_from_file_impl: failed to load model
+0.17.135.021 E common_speculative_init_result: failed to load draft model, '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.17.135.031 E srv    load_model: failed to load draft model, '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.17.135.039 I srv    operator(): operator(): cleaning up before exit...
+0.17.135.899 E srv  llama_server: exiting due to model loading error
+d5-16k-q80       LOAD_FAILED
+0.00.535.273 W model has unused tensor blk.64.attn_k_norm.weight (size = 1024 bytes) -- ignoring
+0.00.535.274 W model has unused tensor blk.64.ffn_gate.weight (size = 38297600 bytes) -- ignoring
+0.00.535.275 W model has unused tensor blk.64.ffn_down.weight (size = 47349760 bytes) -- ignoring
+0.00.535.277 W model has unused tensor blk.64.ffn_up.weight (size = 38297600 bytes) -- ignoring
+0.00.535.287 W model has unused tensor blk.64.nextn.eh_proj.weight (size = 27852800 bytes) -- ignoring
+0.00.535.289 W model has unused tensor blk.64.nextn.enorm.weight (size = 20480 bytes) -- ignoring
+0.00.535.291 W model has unused tensor blk.64.nextn.hnorm.weight (size = 20480 bytes) -- ignoring
+0.00.535.295 W model has unused tensor blk.64.nextn.shared_head_norm.weight (size = 20480 bytes) -- ignoring
+0.02.599.442 I cmn          init: llama threadpool init, n_threads = 20
+0.02.851.460 I common_speculative_init_result: loading draft model '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.05.598.894 E llama_model_load: error loading model: done_getting_tensors: wrong number of tensors; expected 81, got 58
+0.05.598.915 E llama_model_load_from_file_impl: failed to load model
+0.05.598.916 E common_speculative_init_result: failed to load draft model, '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.05.598.928 E srv    load_model: failed to load draft model, '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.05.598.936 I srv    operator(): operator(): cleaning up before exit...
+0.05.599.745 E srv  llama_server: exiting due to model loading error
+d7-16k-q51       LOAD_FAILED
+0.00.714.108 W model has unused tensor blk.64.attn_k_norm.weight (size = 1024 bytes) -- ignoring
+0.00.714.109 W model has unused tensor blk.64.ffn_gate.weight (size = 38297600 bytes) -- ignoring
+0.00.714.110 W model has unused tensor blk.64.ffn_down.weight (size = 47349760 bytes) -- ignoring
+0.00.714.113 W model has unused tensor blk.64.ffn_up.weight (size = 38297600 bytes) -- ignoring
+0.00.714.116 W model has unused tensor blk.64.nextn.eh_proj.weight (size = 27852800 bytes) -- ignoring
+0.00.714.118 W model has unused tensor blk.64.nextn.enorm.weight (size = 20480 bytes) -- ignoring
+0.00.714.119 W model has unused tensor blk.64.nextn.hnorm.weight (size = 20480 bytes) -- ignoring
+0.00.714.123 W model has unused tensor blk.64.nextn.shared_head_norm.weight (size = 20480 bytes) -- ignoring
+0.03.396.298 I cmn          init: llama threadpool init, n_threads = 20
+0.03.737.685 I common_speculative_init_result: loading draft model '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.04.200.575 E llama_model_load: error loading model: done_getting_tensors: wrong number of tensors; expected 81, got 58
+0.04.200.594 E llama_model_load_from_file_impl: failed to load model
+0.04.200.596 E common_speculative_init_result: failed to load draft model, '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.04.200.604 E srv    load_model: failed to load draft model, '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.04.200.611 I srv    operator(): operator(): cleaning up before exit...
+0.04.201.412 E srv  llama_server: exiting due to model loading error
+d5-24k-q51       LOAD_FAILED
+0.00.595.667 W model has unused tensor blk.64.attn_k_norm.weight (size = 1024 bytes) -- ignoring
+0.00.595.668 W model has unused tensor blk.64.ffn_gate.weight (size = 38297600 bytes) -- ignoring
+0.00.595.669 W model has unused tensor blk.64.ffn_down.weight (size = 47349760 bytes) -- ignoring
+0.00.595.670 W model has unused tensor blk.64.ffn_up.weight (size = 38297600 bytes) -- ignoring
+0.00.595.673 W model has unused tensor blk.64.nextn.eh_proj.weight (size = 27852800 bytes) -- ignoring
+0.00.595.675 W model has unused tensor blk.64.nextn.enorm.weight (size = 20480 bytes) -- ignoring
+0.00.595.676 W model has unused tensor blk.64.nextn.hnorm.weight (size = 20480 bytes) -- ignoring
+0.00.595.681 W model has unused tensor blk.64.nextn.shared_head_norm.weight (size = 20480 bytes) -- ignoring
+0.02.530.798 I cmn          init: llama threadpool init, n_threads = 20
+0.02.997.044 I common_speculative_init_result: loading draft model '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.03.459.239 E llama_model_load: error loading model: done_getting_tensors: wrong number of tensors; expected 81, got 58
+0.03.459.256 E llama_model_load_from_file_impl: failed to load model
+0.03.459.257 E common_speculative_init_result: failed to load draft model, '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.03.459.266 E srv    load_model: failed to load draft model, '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.03.459.273 I srv    operator(): operator(): cleaning up before exit...
+0.03.459.996 E srv  llama_server: exiting due to model loading error
+d5-24k-q41       LOAD_FAILED
+0.00.550.960 W model has unused tensor blk.64.attn_k_norm.weight (size = 1024 bytes) -- ignoring
+0.00.550.961 W model has unused tensor blk.64.ffn_gate.weight (size = 38297600 bytes) -- ignoring
+0.00.550.962 W model has unused tensor blk.64.ffn_down.weight (size = 47349760 bytes) -- ignoring
+0.00.550.964 W model has unused tensor blk.64.ffn_up.weight (size = 38297600 bytes) -- ignoring
+0.00.550.966 W model has unused tensor blk.64.nextn.eh_proj.weight (size = 27852800 bytes) -- ignoring
+0.00.550.968 W model has unused tensor blk.64.nextn.enorm.weight (size = 20480 bytes) -- ignoring
+0.00.550.969 W model has unused tensor blk.64.nextn.hnorm.weight (size = 20480 bytes) -- ignoring
+0.00.550.973 W model has unused tensor blk.64.nextn.shared_head_norm.weight (size = 20480 bytes) -- ignoring
+0.02.313.081 I cmn          init: llama threadpool init, n_threads = 20
+0.02.542.150 I common_speculative_init_result: loading draft model '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.02.984.281 E llama_model_load: error loading model: done_getting_tensors: wrong number of tensors; expected 81, got 58
+0.02.984.299 E llama_model_load_from_file_impl: failed to load model
+0.02.984.301 E common_speculative_init_result: failed to load draft model, '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.02.984.309 E srv    load_model: failed to load draft model, '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.02.984.315 I srv    operator(): operator(): cleaning up before exit...
+0.02.985.039 E srv  llama_server: exiting due to model loading error
+d5-32k-q41       LOAD_FAILED
+0.00.515.268 W model has unused tensor blk.64.attn_k_norm.weight (size = 1024 bytes) -- ignoring
+0.00.515.269 W model has unused tensor blk.64.ffn_gate.weight (size = 38297600 bytes) -- ignoring
+0.00.515.271 W model has unused tensor blk.64.ffn_down.weight (size = 47349760 bytes) -- ignoring
+0.00.515.272 W model has unused tensor blk.64.ffn_up.weight (size = 38297600 bytes) -- ignoring
+0.00.515.274 W model has unused tensor blk.64.nextn.eh_proj.weight (size = 27852800 bytes) -- ignoring
+0.00.515.276 W model has unused tensor blk.64.nextn.enorm.weight (size = 20480 bytes) -- ignoring
+0.00.515.278 W model has unused tensor blk.64.nextn.hnorm.weight (size = 20480 bytes) -- ignoring
+0.00.515.283 W model has unused tensor blk.64.nextn.shared_head_norm.weight (size = 20480 bytes) -- ignoring
+0.02.330.264 I cmn          init: llama threadpool init, n_threads = 20
+0.02.622.364 I common_speculative_init_result: loading draft model '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.03.072.756 E llama_model_load: error loading model: done_getting_tensors: wrong number of tensors; expected 81, got 58
+0.03.072.815 E llama_model_load_from_file_impl: failed to load model
+0.03.072.818 E common_speculative_init_result: failed to load draft model, '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.03.072.829 E srv    load_model: failed to load draft model, '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.03.072.838 I srv    operator(): operator(): cleaning up before exit...
+0.03.073.654 E srv  llama_server: exiting due to model loading error
+d5ng-16k-q51     LOAD_FAILED
+0.00.552.069 W model has unused tensor blk.64.attn_k_norm.weight (size = 1024 bytes) -- ignoring
+0.00.552.070 W model has unused tensor blk.64.ffn_gate.weight (size = 38297600 bytes) -- ignoring
+0.00.552.071 W model has unused tensor blk.64.ffn_down.weight (size = 47349760 bytes) -- ignoring
+0.00.552.073 W model has unused tensor blk.64.ffn_up.weight (size = 38297600 bytes) -- ignoring
+0.00.552.075 W model has unused tensor blk.64.nextn.eh_proj.weight (size = 27852800 bytes) -- ignoring
+0.00.552.077 W model has unused tensor blk.64.nextn.enorm.weight (size = 20480 bytes) -- ignoring
+0.00.552.078 W model has unused tensor blk.64.nextn.hnorm.weight (size = 20480 bytes) -- ignoring
+0.00.552.082 W model has unused tensor blk.64.nextn.shared_head_norm.weight (size = 20480 bytes) -- ignoring
+0.02.269.471 I cmn          init: llama threadpool init, n_threads = 20
+0.02.590.925 I common_speculative_init_result: loading draft model '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.03.012.893 E llama_model_load: error loading model: done_getting_tensors: wrong number of tensors; expected 81, got 58
+0.03.012.920 E llama_model_load_from_file_impl: failed to load model
+0.03.012.922 E common_speculative_init_result: failed to load draft model, '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.03.012.935 E srv    load_model: failed to load draft model, '/models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf'
+0.03.012.944 I srv    operator(): operator(): cleaning up before exit...
+0.03.013.772 E srv  llama_server: exiting due to model loading error
+mtp4-16k-q51     spec=draft-mtp                    n=4 ctx=16384  kv=q5_1  used=13915 MiB  free= 395 MiB  gen=   0.0 tok/s  NO_RESPONSE
+mtp4-24k-q80     spec=draft-mtp                    n=4 ctx=24576  kv=q8_0  used=13920 MiB  free= 170 MiB  gen=   0.0 tok/s  NO_RESPONSE

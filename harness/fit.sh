@@ -7,7 +7,7 @@ M=$1; CTX=$2; KV=$3
 docker rm -f qwen38 >/dev/null 2>&1 || true
 sleep 3
 FREE0=$(nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits)
-docker run -d --name qwen38 --gpus all -p 127.0.0.1:8088:8080 \
+docker run -d --name qwen38 --gpus all -p 127.0.0.1:18038:8080 \
   -v /home/kino/models/qwen3.8-27b:/models \
   --entrypoint /app/llama-server ghcr.io/ggml-org/llama.cpp:full-cuda \
   -m "/models/$M" --host 0.0.0.0 --port 8080 \
@@ -15,14 +15,14 @@ docker run -d --name qwen38 --gpus all -p 127.0.0.1:8088:8080 \
   -c "$CTX" -ctk "$KV" -ctv "$KV" \
   --spec-type draft-mtp --spec-draft-n-max 4 >/dev/null 2>&1
 for i in $(seq 1 400); do
-  curl -s -m 2 http://127.0.0.1:8088/health 2>/dev/null | grep -q '"ok"' && break
+  curl -s -m 2 http://127.0.0.1:18038/health 2>/dev/null | grep -q '"ok"' && break
   docker ps --format '{{.Names}}' | grep -q '^qwen38$' || { echo "$M ctx=$CTX kv=$KV -> LOAD_FAILED"; docker logs qwen38 2>&1 | tail -6; exit 1; }
   sleep 1
 done
 FREE1=$(nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits)
 R=$(python3 - <<'PY'
 import requests,json
-r=requests.post("http://127.0.0.1:8088/v1/chat/completions",json={"model":"qwen3.8-27b",
+r=requests.post("http://127.0.0.1:18038/v1/chat/completions",json={"model":"qwen3.8-27b",
   "messages":[{"role":"user","content":"Write a Python function to compute the nth Fibonacci number iteratively. Code only."}],
   "temperature":0.7,"top_p":0.8,"max_tokens":200,"reasoning_effort":"low"},timeout=1800).json()
 t=r.get("timings",{}) or {}
